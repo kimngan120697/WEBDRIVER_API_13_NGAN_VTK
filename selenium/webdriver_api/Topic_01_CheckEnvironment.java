@@ -62,6 +62,7 @@ public class Topic_01_CheckEnvironment {
 	public void afterClass() {
 		//Tắt trình duyệt
 		driver.quit();
+		//Check commit code
 	}
 
 }
