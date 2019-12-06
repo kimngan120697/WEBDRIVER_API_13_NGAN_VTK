@@ -1,5 +1,6 @@
 package webdriver_api;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -17,7 +18,7 @@ public class Topic_03_Xpath {
 	WebDriver driver;
 	String firstName = "Automation";
 	String lastName = "Testing";
-	String validEmail = "automation@gmail.com";
+	String validEmail = "automation" + randomNumber() + "@gmail.com";
 	String validPassword = "123123";
 
 	// Pre-condition
@@ -106,7 +107,44 @@ public class Topic_03_Xpath {
 	}
 
 	@Test
-	public void TC_05_LoginWithValidEmailAndPassword() {
+	// Create a new account
+	public void TC_05_CreateNewAccount() {
+		// 1. Truy cập trang http://live.demoguru99.com
+		// 2. Click vào link My Account để tới trang đăng nhập
+
+		// 3. Click CREATE AN ACCOUNT button để tới trang đăng kí tài khoản
+		driver.findElement(By.xpath("//span[text()='Create an Account']")).click();
+		
+		// 4. Nhập thông tin hợp lệ vào tất cả các field: FirstName/Lastname/Email Address/Password/Confirm Password
+		driver.findElement(By.xpath("//input[@id='firstname']")).sendKeys(firstName);
+		driver.findElement(By.xpath("//input[@id='lastname']")).sendKeys(lastName);
+		driver.findElement(By.xpath("//input[@id='email_address']")).sendKeys(validEmail);
+		driver.findElement(By.xpath("//input[@id='password']")).sendKeys(validPassword);
+		driver.findElement(By.xpath("//input[@id='confirmation']")).sendKeys(validPassword);
+		
+		//05. Click REGISTER button
+		driver.findElement(By.xpath("//button[@title='Register']")).click();
+
+		
+		//06. Verify message xuất hiện khi đăng ký thành công: Thank you for registering with Main Website Store.
+		Assert.assertTrue(driver.findElement(By.xpath("//li[@class='success-msg']//span[text()='Thank you for registering with Main Website Store.']")).isDisplayed());
+		
+		String content1 = driver.findElement(By.xpath("//div[@class='page-title']//h1")).getText();
+		Assert.assertEquals(content1, "MY DASHBOARD");
+		Assert.assertTrue(driver.findElement(By.xpath("//strong[text()='Hello, " + firstName + " " + lastName + "!']")).isDisplayed());
+		Assert.assertTrue(driver.findElement(By.xpath("//div[@class='col-1']//p[contains(text(),'" + firstName + " " + lastName + "')]")).isDisplayed());
+		Assert.assertTrue(driver.findElement(By.xpath("//div[@class='col-1']//p[contains(.,'" + validEmail + "')]")).isDisplayed());
+		
+		//07. Logout khỏi hệ thống
+		driver.findElement(By.xpath("//div[@class='account-cart-wrapper']//span[text()='Account']")).click();
+		driver.findElement(By.xpath("//a[@title='Log Out']")).click();
+		
+		
+		//08. Kiểm tra hệ thống navigate về Home page sau khi logout thành công.
+	}
+
+	@Test
+	public void TC_06_LoginWithValidEmailAndPassword() {
 		// 3. Nhập email correct and password correct: automation@gmail.com/123123
 		driver.findElement(By.xpath("//input[@id='email']")).sendKeys(validEmail);
 		driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(validPassword);
@@ -114,12 +152,12 @@ public class Topic_03_Xpath {
 		driver.findElement(By.xpath("//button[@id=\"send2\"]")).click();
 
 		// 5. Verify các thông tin được hiển thị
-		//Cách 1: Dùng hàm assertTrue(điều kiện) -> locator được hiển thị (isDisplayed)
+		// Cách 1: Dùng hàm assertTrue(điều kiện) -> locator được hiển thị (isDisplayed)
 		Assert.assertTrue(driver.findElement(By.xpath("//strong[text()='Hello, " + firstName + " " + lastName + "!']")).isDisplayed());
 		Assert.assertTrue(driver.findElement(By.xpath("//div[@class='col-1']//p[contains(text(),'" + firstName + " " + lastName + "')]")).isDisplayed());
 		Assert.assertTrue(driver.findElement(By.xpath("//div[@class='col-1']//p[contains(.,'" + validEmail + "')]")).isDisplayed());
-		
-		//Cách 2: Dùng hàm assertEquals (điều kiện 1, điều kiện 2) -> getText
+
+		// Cách 2: Dùng hàm assertEquals (điều kiện 1, điều kiện 2) -> getText
 		String content1 = driver.findElement(By.xpath("//div[@class='page-title']//h1")).getText();
 		Assert.assertEquals(content1, "MY DASHBOARD");
 
@@ -130,6 +168,12 @@ public class Topic_03_Xpath {
 	public void afterClass() {
 		// Tắt trình duyệt
 		driver.quit();
+	}
+
+	public int randomNumber() {
+		Random rand = new Random();
+		int number = rand.nextInt(100);
+		return number;
 	}
 
 }
