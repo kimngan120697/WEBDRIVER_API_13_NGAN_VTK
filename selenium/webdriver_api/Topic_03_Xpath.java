@@ -17,6 +17,8 @@ public class Topic_03_Xpath {
 	WebDriver driver;
 	String firstName = "Automation";
 	String lastName = "Testing";
+	String validEmail = "automation@gmail.com";
+	String validPassword = "123123";
 
 	// Pre-condition
 	@BeforeClass(description = "Chạy trước và 1 lần duy nhất cho tất cả các test bên dưới")
@@ -98,7 +100,7 @@ public class Topic_03_Xpath {
 		driver.findElement(By.xpath("//button[@id=\"send2\"]")).click();
 
 		// 5. Verify Error message xuất hiện: Invalid login or password.
-		String errorMsg = driver.findElement(By.xpath("//div[@class='account-login']//span")).getText();
+		String errorMsg = driver.findElement(By.xpath("//li[@class='error-msg']//span")).getText();
 		Assert.assertEquals(errorMsg, "Invalid login or password.");
 
 	}
@@ -106,20 +108,20 @@ public class Topic_03_Xpath {
 	@Test
 	public void TC_05_LoginWithValidEmailAndPassword() {
 		// 3. Nhập email correct and password correct: automation@gmail.com/123123
-		driver.findElement(By.xpath("//input[@id='email']")).sendKeys("automation@gmail.com");
-		driver.findElement(By.xpath("//input[@id='pass']")).sendKeys("123123");
-
+		driver.findElement(By.xpath("//input[@id='email']")).sendKeys(validEmail);
+		driver.findElement(By.xpath("//input[@id='pass']")).sendKeys(validPassword);
 		// 4. Click Login button
 		driver.findElement(By.xpath("//button[@id=\"send2\"]")).click();
 
 		// 5. Verify các thông tin được hiển thị
-
+		//Cách 1: Dùng hàm assertTrue(điều kiện) -> locator được hiển thị (isDisplayed)
+		Assert.assertTrue(driver.findElement(By.xpath("//strong[text()='Hello, " + firstName + " " + lastName + "!']")).isDisplayed());
+		Assert.assertTrue(driver.findElement(By.xpath("//div[@class='col-1']//p[contains(text(),'" + firstName + " " + lastName + "')]")).isDisplayed());
+		Assert.assertTrue(driver.findElement(By.xpath("//div[@class='col-1']//p[contains(.,'" + validEmail + "')]")).isDisplayed());
+		
+		//Cách 2: Dùng hàm assertEquals (điều kiện 1, điều kiện 2) -> getText
 		String content1 = driver.findElement(By.xpath("//div[@class='page-title']//h1")).getText();
 		Assert.assertEquals(content1, "MY DASHBOARD");
-
-		Assert.assertTrue(driver.findElement(By.xpath("//strong[text()='Hello, "+firstName+" "+lastName+"!']")).isDisplayed());
-		Assert.assertTrue(driver.findElement(By.xpath("//div[@class='col-1']//p[contains(text(),'" + firstName + " " + lastName + "')]")).isDisplayed());
-		Assert.assertTrue(driver.findElement(By.xpath("//div[@class='col-1']//p[contains(.,'automation@gmail.com')]")).isDisplayed());
 
 	}
 
