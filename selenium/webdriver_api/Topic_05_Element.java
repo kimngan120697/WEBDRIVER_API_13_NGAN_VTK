@@ -17,7 +17,7 @@ public class Topic_05_Element {
 	// Khai báo 1 cái biến driver đại diện cho Selenium WebDriver
 	WebDriver driver;
 	By emailTextboxBy=By.xpath("//input[@id='mail']");
-	By ageUnder18RadioButtonBy=By.xpath("//label[contains(text(),'Under 18')]");
+	By ageUnder18RadioButtonBy=By.xpath("//input[@id='under_18']");
 	By educationTextAreaBy=By.xpath("//textarea[@id='edu']");
 	By jobRole01By=By.xpath("//select[@id='job1']");
 	By developmentCheckboxBy=By.xpath("//input[@id='development']");
@@ -26,9 +26,6 @@ public class Topic_05_Element {
 	By radioBtnDisabledBy=By.xpath("//input[@id='radio-disabled']");
 	By biographyTextAreaBy=By.xpath("//textarea[@id='bio']");
 	By slider02By= By.xpath("//input[@id='slider-2']");
-	
-	
-	
 	
 	
 	// Pre-condition
@@ -80,14 +77,39 @@ public class Topic_05_Element {
 		Assert.assertFalse(isElementEnabled(biographyTextAreaBy));
 		Assert.assertFalse(isElementEnabled(slider02By));
 		
-		
 	}
 
 	@Test
-	public void TC_03_NavigateFunction() {
+	public void TC_03_Selected() {
+		
+		
+		System.out.println("01.Truy cập trang");
+		
+		driver.get("https://automationfc.github.io/basic-form/index.html");
+		driver.navigate().refresh();
+		
+		
+		System.out.println("02.Click chọn");
+		clickToElement(ageUnder18RadioButtonBy);
+		clickToElement(developmentCheckboxBy);
+		
+		System.out.println("03.Check elements selected at step 02");
+		Assert.assertTrue(isElementSelected(ageUnder18RadioButtonBy));
+		Assert.assertTrue(isElementSelected(developmentCheckboxBy));
+		
+		System.out.println("04.Click non-selected Interests (Development) checkbox");
+		clickToElement(developmentCheckboxBy);
+		
+		System.out.println("05.Check elements selected at step 05");
+		Assert.assertTrue(isElementSelected(ageUnder18RadioButtonBy));
+		Assert.assertFalse(isElementSelected(developmentCheckboxBy));
 		
 	}
 
+	public void clickToElement(By by) {
+		WebElement element=driver.findElement(by);
+		element.click();
+	}
 	public boolean isElementDisplayed(By by)
 	{
 		WebElement element=driver.findElement(by);
@@ -101,15 +123,6 @@ public class Topic_05_Element {
 		}
 	}
 	
-	public void sendkeyToElement(By by, String value) {
-		WebElement element = driver.findElement(by);
-		element.sendKeys(value);
-	}
-	
-	public void clickToElement(By by) {
-		WebElement element=driver.findElement(by);
-		element.click();
-	}
 	
 	public boolean isElementEnabled(By by) {
 		WebElement element=driver.findElement(by);
@@ -124,6 +137,28 @@ public class Topic_05_Element {
 			return false;
 		}
 	}
+	
+	public boolean isElementSelected(By by) {
+		WebElement element=driver.findElement(by);
+		if(element.isSelected())
+		{
+			System.out.println("Element ["+by+"] is selected");
+			return true;
+		}
+		else
+		{
+			System.out.println("Element ["+by+"] is unselected");
+			return false;
+		}
+	}
+	
+
+	public void sendkeyToElement(By by, String value) {
+		WebElement element = driver.findElement(by);
+		element.sendKeys(value);
+	}
+	
+
 	// Post condition
 	@AfterClass
 	public void afterClass() {
