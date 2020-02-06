@@ -1,10 +1,10 @@
 package webdriver_api;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -14,24 +14,24 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class Topic_07_Dropdown_List_Custom {
 	WebDriver driver;
 	WebDriverWait waitExplicit;
 	Select select;
-
+	JavascriptExecutor javascript;
 	// Pre-condition
+	
 	@BeforeClass
 	public void beforeClass() {
 		driver = new FirefoxDriver();
-		waitExplicit = new WebDriverWait(driver, 10);
+		waitExplicit = new WebDriverWait(driver, 5);
+		javascript= (JavascriptExecutor) driver;
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 
 	}
-
 	@Test
 	public void TC_01_JQuery() throws InterruptedException {
 
@@ -56,11 +56,29 @@ public class Topic_07_Dropdown_List_Custom {
 	}
 	
 	@Test
-	public void TC_02_Angular() {
-		driver.get("https://jqueryui.com/resources/demos/selectmenu/default.html");
-		// Click vào 1 và kiểm tra nó được chọn thành công
-		selectItemInCustomDropdown("//span[@id='number-button']", "//ul[@id='number-menu']/li", "1");
-		Assert.assertTrue(isElementDisplayed("//span[@id='number-button']/span[@class='ui-selectmenu-text' and text()='1']"));
+	public void TC_02_Angular() throws InterruptedException {
+		driver.get("https://ej2.syncfusion.com/angular/demos/?_ga=2.262049992.437420821.1575083417-524628264.1575083417#/material/drop-down-list/data-binding");
+		
+		// Click vào Football và kiểm tra nó được chọn thành công
+		selectItemInCustomDropdown("//ejs-dropdownlist[@id='games']", "//ul[@id='games_options']/li", "Football");
+		Thread.sleep(2000);
+		//Kiểm tra Football được chọn thành công
+		String expectedValue=getTextByJS("#games_hidden>option");
+		System.out.println("Text="+ expectedValue);
+		Assert.assertEquals(expectedValue,"Football");
+
+	}
+	@Test
+	public void TC_02_React() throws InterruptedException {
+		driver.get("https://react.semantic-ui.com/maximize/dropdown-example-selection/");
+		
+		// Click vào Football và kiểm tra nó được chọn thành công
+		selectItemInCustomDropdown("//ejs-dropdownlist[@id='games']", "//ul[@id='games_options']/li", "Football");
+		Thread.sleep(2000);
+		//Kiểm tra Football được chọn thành công
+		String expectedValue=getTextByJS("#games_hidden>option");
+		System.out.println("Text="+ expectedValue);
+		Assert.assertEquals(expectedValue,"Football");
 
 	}
 	public boolean isElementDisplayed(String locatorXpath) {
@@ -71,7 +89,10 @@ public class Topic_07_Dropdown_List_Custom {
 			return false;
 		}
 	}
-
+	public String getTextByJS(String locator)
+	{
+		return (String) javascript.executeScript("return document.querySelector('"+locator+"').text");
+	}
 	public void selectItemInCustomDropdown(String parentXpath, String allItemsXpath, String expectedText) {
 
 		// 01. Click vào thẻ chứa Dropdown để show all items
@@ -93,8 +114,6 @@ public class Topic_07_Dropdown_List_Custom {
 			}
 		}
 	}
-
-
 
 	// Post condition
 	@AfterClass
