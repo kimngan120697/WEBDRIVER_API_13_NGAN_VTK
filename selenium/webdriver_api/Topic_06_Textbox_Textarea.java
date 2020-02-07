@@ -96,7 +96,6 @@ public class Topic_06_Textbox_Textarea {
 		sendkeyToElement(emailTextboxBy, email);
 		sendkeyToElement(passwordTextboxBy, password);
 		clickToElement(sumbitBtnBy);
-
 		Assert.assertTrue(driver.findElement(By.xpath("//p[@class='heading3' and text()='Customer Registered Successfully!!!']")).isDisplayed());
 
 		// Verify output data= input data
