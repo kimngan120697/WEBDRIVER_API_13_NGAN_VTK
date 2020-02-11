@@ -1,8 +1,11 @@
 package webdriver_api;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
@@ -30,7 +33,6 @@ public class Topic_09_User_Interactions {
 
 	}
 
-	@Test
 	public void TC_01_HoverToElement() {
 		
 		driver.get("http://www.myntra.com/");
@@ -39,21 +41,49 @@ public class Topic_09_User_Interactions {
 		Assert.assertTrue(driver.findElement(By.xpath("//h1[@class='title-title' and text()='American Eagle']")).isDisplayed());
 	}
 
-	@Test
 	public void TC_02_ClickAndHoleElement() {
 		driver.get("https://jqueryui.com/resources/demos/selectable/display-grid.html");
+		List <WebElement> numbers=driver.findElements(By.xpath("//ol[@id='selectable']/li"));
+		int numbersSize= numbers.size();
+		System.out.println("Size before click and hold: "+numbersSize);
+		action.clickAndHold(numbers.get(0)).moveToElement(numbers.get(3)).release().perform();
 		
+		List <WebElement> selectedNumbers=driver.findElements(By.xpath("//li[@class='ui-state-default ui-selectee ui-selected']"));
+		System.out.println("Size after click and hold: "+numbers.size());
+		
+		for(WebElement number:selectedNumbers)
+		{
+			System.out.println(number.getText());
+		}
+		Assert.assertEquals(selectedNumbers.size(), 4);
 	}
 
-	@Test
 	public void TC_03_ClickAndSelectElement() {
+		driver.get("https://jqueryui.com/resources/demos/selectable/display-grid.html");
+		List <WebElement> numbers=driver.findElements(By.xpath("//ol[@id='selectable']/li"));
+		int numbersSize= numbers.size();
+		System.out.println("Size before click and hold: "+numbersSize);
 		
+		action.keyDown(Keys.CONTROL).perform();
+		action.click(numbers.get(0)).click(numbers.get(2)).click(numbers.get(5)).click(numbers.get(10)).perform();
+		action.keyUp(Keys.CONTROL).perform();
+		
+		List <WebElement> selectedNumbers=driver.findElements(By.xpath("//li[@class='ui-state-default ui-selectee ui-selected']"));
+		System.out.println("Size after click and hold: "+numbers.size());
+		
+		for(WebElement number:selectedNumbers)
+		{
+			System.out.println(number.getText());
+		}
+		Assert.assertEquals(selectedNumbers.size(), 4);
 		
 	}
 	
 	@Test
 	public void TC_04_DoubleClick() {
-		
+		driver.get("https://automationfc.github.io/basic-form/index.html");
+		action.doubleClick(driver.findElement(By.xpath("//button[text()='Double click me']"))).perform();
+		Assert.assertEquals(driver.findElement(By.xpath("//p[@id='demo']")).getText(), "Hello Automation Guys!");
 		
 	}
 	@Test
