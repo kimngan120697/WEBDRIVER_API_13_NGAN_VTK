@@ -46,7 +46,28 @@ public class Topic_09_User_Interactions {
 	}
 
 	@Test
-	public void TC_03_NavigateFunction() {
+	public void TC_03_ClickAndSelectElement() {
+		
+		
+	}
+	
+	@Test
+	public void TC_04_DoubleClick() {
+		
+		
+	}
+	@Test
+	public void TC_05_RightClickToElement() {
+		
+		
+	}
+	@Test
+	public void TC_06_DragAnDropElement() {
+		
+		
+	}
+	@Test
+	public void TC_07_DragAnDropHTML5() {
 		
 		
 	}
