@@ -124,6 +124,22 @@ public class Topic_09_User_Interactions {
 		driver.get("http://the-internet.herokuapp.com/drag_and_drop");
 		String sourceCss = "column-a";
 		String targetCss = "column-b";
+		String java_script = readFile(javascriptPath);
+
+		// Inject Jquery lib to site
+		// String jqueryscript = readFile(jqueryPath);
+		// javascriptExecutor.executeScript(jqueryscript);
+
+		// A to B
+		java_script = java_script + "$(\"" + sourceCss + "\").simulateDragDrop({ dropTarget: \"" + targetCss + "\"});";
+		javascriptExecutor.executeScript(java_script);
+		Thread.sleep(3000);
+		Assert.assertTrue(isElementDisplayed("//div[@id='column-a']/header[text()='B']"));
+
+		// B to A
+		javascriptExecutor.executeScript(java_script);
+		Thread.sleep(3000);
+		Assert.assertTrue(isElementDisplayed("//div[@id='column-b']/header[text()='B']"));
 	}
 
 	public String readFile(String file) throws IOException {
