@@ -53,7 +53,7 @@ public class Topic_09_User_Interactions {
 		driver.manage().window().maximize();
 
 	}
-	@Test
+	
 	public void TC_01_HoverToElement() {
 
 		driver.get("http://www.myntra.com/");
@@ -64,7 +64,6 @@ public class Topic_09_User_Interactions {
 				driver.findElement(By.xpath("//h1[@class='title-title' and text()='American Eagle']")).isDisplayed());
 	}
 
-	@Test
 	public void TC_02_ClickAndHoleElement() {
 		driver.get("https://jqueryui.com/resources/demos/selectable/display-grid.html");
 		List<WebElement> numbers = driver.findElements(By.xpath("//ol[@id='selectable']/li"));
@@ -81,8 +80,6 @@ public class Topic_09_User_Interactions {
 		}
 		Assert.assertEquals(selectedNumbers.size(), 4);
 	}
-
-	@Test
 	public void TC_03_ClickAndSelectElement() {
 		driver.get("https://jqueryui.com/resources/demos/selectable/display-grid.html");
 		List<WebElement> numbers = driver.findElements(By.xpath("//ol[@id='selectable']/li"));
@@ -103,8 +100,6 @@ public class Topic_09_User_Interactions {
 		Assert.assertEquals(selectedNumbers.size(), 4);
 
 	}
-
-	@Test
 	public void TC_04_DoubleClick() {
 		driver.get("https://automationfc.github.io/basic-form/index.html");
 		action.doubleClick(driver.findElement(By.xpath("//button[text()='Double click me']"))).perform();
@@ -112,7 +107,7 @@ public class Topic_09_User_Interactions {
 
 	}
 
-	@Test
+	
 	public void TC_05_RightClickToElement() throws InterruptedException {
 		driver.get("http://swisnl.github.io/jQuery-contextMenu/demo.html");
 
@@ -133,13 +128,15 @@ public class Topic_09_User_Interactions {
 		WebElement sourceCircle = driver.findElement(By.xpath("//div[@id='draggable']"));
 		WebElement targetCircle = driver.findElement(By.xpath("//div[@id='droptarget']"));
 
+		javascriptExecutor.executeScript("arguments[0].scrollIntoView(true)", targetCircle);
+		action.dragAndDrop(sourceCircle, targetCircle).perform();
 		action.dragAndDrop(sourceCircle, targetCircle).perform();
 		Assert.assertTrue(
 				driver.findElement(By.xpath("//div[@id='droptarget' and text()='You did great!']")).isDisplayed());
 
 	}
 
-	@Test
+	
 	public void TC_07_DragAnDropHTML5() throws InterruptedException, IOException {
 
 		driver.get("http://the-internet.herokuapp.com/drag_and_drop");
