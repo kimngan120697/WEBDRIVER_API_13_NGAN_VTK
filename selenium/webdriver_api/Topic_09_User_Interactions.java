@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,34 +25,46 @@ import org.testng.annotations.Test;
 
 public class Topic_09_User_Interactions {
 
+	String projectPath = System.getProperty("user.dir");
 	WebDriver driver;
 	Actions action;
+	JavascriptExecutor javascriptExecutor;
+	String javascriptPath, jqueryPath;
 
 	// Pre-condition
 	@BeforeClass
 	public void beforeClass() {
 
 		// Set biến môi trường cho driver trong quá trình chạy
-		// System.setProperty("webdriver.chrome.driver", ".\\libraries\\chromedriver.exe");
-		// driver=new ChromeDriver();
+		System.setProperty("webdriver.chrome.driver", projectPath + "\\libraries\\chromedriver.exe");
+		driver = new ChromeDriver();
 
-		FirefoxProfile profile = new FirefoxProfile(); // tắt notification of Firefox
-		profile.setPreference("dom.webnotification.enabled", false); // tắt notification of Firefox
-		driver = new FirefoxDriver(profile);
+		// FirefoxProfile profile = new FirefoxProfile(); // tắt notification of Firefox
+		// profile.setPreference("dom.webnotification.enabled", false); // tắt
+		// notification of Firefox
+		// driver = new FirefoxDriver(profile);
 		action = new Actions(driver);
+		javascriptExecutor = (JavascriptExecutor) driver;
+
+		javascriptPath = projectPath + "\\dragAndDrop\\drag_and_drop_helper.js";
+		jqueryPath = projectPath + "\\dragAndDrop\\jquery_load_helper.js";
+
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 
 	}
-
+	@Test
 	public void TC_01_HoverToElement() {
 
 		driver.get("http://www.myntra.com/");
-		action.moveToElement(driver.findElement(By.xpath("//div[@class='desktop-navLink']//a[text()='Discover']"))).perform();
+		action.moveToElement(driver.findElement(By.xpath("//div[@class='desktop-navLink']//a[text()='Discover']")))
+				.perform();
 		driver.findElement(By.xpath("//a[text()='American Eagle']")).click();
-		Assert.assertTrue(driver.findElement(By.xpath("//h1[@class='title-title' and text()='American Eagle']")).isDisplayed());
+		Assert.assertTrue(
+				driver.findElement(By.xpath("//h1[@class='title-title' and text()='American Eagle']")).isDisplayed());
 	}
 
+	@Test
 	public void TC_02_ClickAndHoleElement() {
 		driver.get("https://jqueryui.com/resources/demos/selectable/display-grid.html");
 		List<WebElement> numbers = driver.findElements(By.xpath("//ol[@id='selectable']/li"));
@@ -59,7 +72,8 @@ public class Topic_09_User_Interactions {
 		System.out.println("Size before click and hold: " + numbersSize);
 		action.clickAndHold(numbers.get(0)).moveToElement(numbers.get(3)).release().perform();
 
-		List<WebElement> selectedNumbers = driver.findElements(By.xpath("//li[@class='ui-state-default ui-selectee ui-selected']"));
+		List<WebElement> selectedNumbers = driver
+				.findElements(By.xpath("//li[@class='ui-state-default ui-selectee ui-selected']"));
 		System.out.println("Size after click and hold: " + numbers.size());
 
 		for (WebElement number : selectedNumbers) {
@@ -68,6 +82,7 @@ public class Topic_09_User_Interactions {
 		Assert.assertEquals(selectedNumbers.size(), 4);
 	}
 
+	@Test
 	public void TC_03_ClickAndSelectElement() {
 		driver.get("https://jqueryui.com/resources/demos/selectable/display-grid.html");
 		List<WebElement> numbers = driver.findElements(By.xpath("//ol[@id='selectable']/li"));
@@ -78,7 +93,8 @@ public class Topic_09_User_Interactions {
 		action.click(numbers.get(0)).click(numbers.get(2)).click(numbers.get(5)).click(numbers.get(10)).perform();
 		action.keyUp(Keys.CONTROL).perform();
 
-		List<WebElement> selectedNumbers = driver.findElements(By.xpath("//li[@class='ui-state-default ui-selectee ui-selected']"));
+		List<WebElement> selectedNumbers = driver
+				.findElements(By.xpath("//li[@class='ui-state-default ui-selectee ui-selected']"));
 		System.out.println("Size after click and hold: " + numbers.size());
 
 		for (WebElement number : selectedNumbers) {
@@ -88,6 +104,7 @@ public class Topic_09_User_Interactions {
 
 	}
 
+	@Test
 	public void TC_04_DoubleClick() {
 		driver.get("https://automationfc.github.io/basic-form/index.html");
 		action.doubleClick(driver.findElement(By.xpath("//button[text()='Double click me']"))).perform();
@@ -95,12 +112,15 @@ public class Topic_09_User_Interactions {
 
 	}
 
+	@Test
 	public void TC_05_RightClickToElement() throws InterruptedException {
 		driver.get("http://swisnl.github.io/jQuery-contextMenu/demo.html");
 
 		action.contextClick(driver.findElement(By.xpath("//span[text()='right click me']"))).perform();
 		action.moveToElement(driver.findElement(By.xpath("//span[text()='Quit']"))).perform();
-		Assert.assertTrue(driver.findElement(By.xpath("//li[contains(@class,'context-menu-visible') and contains(@class,'context-menu-hover')]/span[text()='Quit']")).isDisplayed());
+		Assert.assertTrue(driver.findElement(By.xpath(
+				"//li[contains(@class,'context-menu-visible') and contains(@class,'context-menu-hover')]/span[text()='Quit']"))
+				.isDisplayed());
 		driver.findElement(By.xpath("//span[text()='Quit']")).click();
 		Assert.assertEquals(driver.switchTo().alert().getText(), "clicked: quit");
 		Thread.sleep(3000);
@@ -114,16 +134,17 @@ public class Topic_09_User_Interactions {
 		WebElement targetCircle = driver.findElement(By.xpath("//div[@id='droptarget']"));
 
 		action.dragAndDrop(sourceCircle, targetCircle).perform();
-		Assert.assertTrue(driver.findElement(By.xpath("//div[@id='droptarget' and text()='You did great!']")).isDisplayed());
+		Assert.assertTrue(
+				driver.findElement(By.xpath("//div[@id='droptarget' and text()='You did great!']")).isDisplayed());
 
 	}
 
 	@Test
-	public void TC_07_DragAnDropHTML5() {
+	public void TC_07_DragAnDropHTML5() throws InterruptedException, IOException {
 
 		driver.get("http://the-internet.herokuapp.com/drag_and_drop");
-		String sourceCss = "column-a";
-		String targetCss = "column-b";
+		String sourceCss = "#column-a";
+		String targetCss = "#column-b";
 		String java_script = readFile(javascriptPath);
 
 		// Inject Jquery lib to site
@@ -156,6 +177,15 @@ public class Topic_09_User_Interactions {
 			return builder.toString();
 		} finally {
 			stream.close();
+		}
+	}
+
+	public boolean isElementDisplayed(String xpathLocator) {
+		WebElement element = driver.findElement(By.xpath(xpathLocator));
+		if (element.isDisplayed()) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
