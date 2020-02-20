@@ -1,5 +1,6 @@
 package webdriver_api;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -18,206 +19,85 @@ import org.testng.annotations.Test;
 public class Topic_11_12_Popup_Iframe_Window_2 {
 
 	WebDriver driver;
-	JavascriptExecutor javascript;
+	String projectPath=System.getProperty("user.dir");
+	String image01Path=projectPath+"\\uploadFiles\\Image_01.jpg";
+	String image02Path=projectPath+"\\uploadFiles\\Image_02.jpg";
+	String image03Path=projectPath+"\\uploadFiles\\Image_03.jpg";
+	String image04Path=projectPath+"\\uploadFiles\\Image_04.jpg";
+	String image05Path=projectPath+"\\uploadFiles\\Image_05.jpg";
+	
+	String chromeAutoIT=projectPath+"\\uploadAutoIT\\chrome.exe";
+	String firefoxAutoIT=projectPath+"\\\\uploadAutoIT\\firefox.exe";
+	
 	// Pre-condition
 	@BeforeClass
 	public void beforeClass() {
+		
+		//Firefox Latest
+		System.setProperty("webdriver.gecko.driver", ".\\libraries\\geckodriver.exe");
 		driver = new FirefoxDriver();
+		
+		//Chrome
+		//System.setProperty("webdriver.chrome.driver", projectPath+"\\libraries\\geckodriver.exe")
+		//driver = new FirefoxDriver();
+		
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		driver.manage().window().maximize();
 
 	}
 
-	public void TC_02_Window_Tab_01() throws InterruptedException {
-		driver.get("https://automationfc.github.io/basic-form/index.html");
+	public void TC_01_UploadFile_bySendkeys() throws InterruptedException {
+		driver.get("http://blueimp.github.com/jQuery-File-Upload/");
 		
-		String parentID=driver.getWindowHandle(); 
-		System.out.println("Parent ID: "+parentID);
+		WebElement uploadFile=find("//input[@type='file']");
+		uploadFile.sendKeys(image01Path+"\n"+image02Path+"\n"+image03Path+"\n"+image04Path+"\n"+image05Path);
+		Thread.sleep(3000);
 		
-		driver.findElement(By.xpath("//a[text()='GOOGLE']")).click();
-		Thread.sleep(2000);
+		List  <WebElement> startButtons=finds("//table//button[@class='btn btn-primary start']");
+		for(WebElement start:startButtons)
+		{
+			start.click();
+			Thread.sleep(2000);
+		}
+		Assert.assertTrue(find("//p[@class='name']//a[@title='Image_01.jpg']").isDisplayed());
+		Assert.assertTrue(find("//p[@class='name']//a[@title='Image_02.jpg']").isDisplayed());
+		Assert.assertTrue(find("//p[@class='name']//a[@title='Image_03.jpg']").isDisplayed());
+		Assert.assertTrue(find("//p[@class='name']//a[@title='Image_04.jpg']").isDisplayed());
+		Assert.assertTrue(find("//p[@class='name']//a[@title='Image_05.jpg']").isDisplayed());
 		
-		switchToWindowByTitle("Google");
-		Assert.assertEquals(driver.getTitle(),"Google");
-		
-		switchToWindowByTitle("SELENIUM WEBDRIVER FORM DEMO");
-		Thread.sleep(2000);
-		Assert.assertEquals(driver.getTitle(),"SELENIUM WEBDRIVER FORM DEMO");
-		
-		driver.findElement(By.xpath("//a[text()='FACEBOOK']")).click();
-		Thread.sleep(2000);
-		switchToWindowByTitle("Facebook - Đăng nhập hoặc đăng ký");
-		Assert.assertEquals(driver.getTitle(),"Facebook - Đăng nhập hoặc đăng ký");
-		
-		switchToWindowByTitle("SELENIUM WEBDRIVER FORM DEMO");
-		Thread.sleep(2000);
-
-		driver.findElement(By.xpath("//a[text()='TIKI']")).click();
-		Thread.sleep(2000);
-		switchToWindowByTitle("Mua Hàng Trực Tuyến Uy Tín với Giá Rẻ Hơn tại Tiki.vn");
-		Assert.assertEquals(driver.getTitle(),"Mua Hàng Trực Tuyến Uy Tín với Giá Rẻ Hơn tại Tiki.vn");
-		
-		closeAllWindowWithoutParent(parentID);
 		
 	}
 	
 	@Test
-	public void TC_03_Window_Tab_02() throws InterruptedException {
+	public void TC_02_UploadFile_byAutoIT() throws InterruptedException, IOException{
+		driver.get("http://blueimp.github.com/jQuery-File-Upload/");
 		
-		driver.get("https://kyna.vn/");
-		String parentID=driver.getWindowHandle();
+		WebElement uploadFile=driver.findElement(By.cssSelector(".fileinput-button"));
+		uploadFile.click();
 		
-		List <WebElement> fancyPopup=driver.findElements(By.xpath("//div[@class='fancybox-inner']"));
-		System.out.println("Fancybox popup is displayed: " + fancyPopup.size());
-		if (fancyPopup.size()>0)
-		{
-			Assert.assertTrue(fancyPopup.get(0).isDisplayed());
-			driver.findElement(By.cssSelector(".fancybox-close")).click();
-		}
-
-		clickElementByJavascript("//div[@class='social']/a/img[@alt='facebook']");
+		//Execute time file(.exe/ .msi/ .jar/ .bat/ .sh)
+		Runtime.getRuntime().exec(new String[] {firefoxAutoIT,image01Path} );
+		find("//table//button[@class='btn btn-primary start']").click();
 		Thread.sleep(2000);
-		switchToWindowByTitle("Kyna.vn - Trang chủ | Facebook");
-		Assert.assertEquals(driver.getTitle(),"Kyna.vn - Trang chủ | Facebook");
-		
-		switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");
-		Thread.sleep(2000);
-		
-		clickElementByJavascript("//a//img[@alt='youtube']");
-		Thread.sleep(2000);
-		switchToWindowByTitle("Kyna.vn - YouTube");
-		Assert.assertEquals(driver.getTitle(),"Kyna.vn - YouTube");
-		
-		switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");
-		Thread.sleep(2000);
-		
-		clickElementByJavascript("//a//img[@alt='zalo']");
-		Thread.sleep(2000);
-		switchToWindowByTitle("Kyna.vn");
-		Assert.assertEquals(driver.getCurrentUrl(),"https://zalo.me/1985686830006307471");
-		
-		switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");
-		Thread.sleep(2000);
-		
-		clickElementByJavascript("//a/img[@alt='apple-app-icon']");
-		Thread.sleep(2000);
-		switchToWindowByTitle("‎KYNA on the App Store");
-		Assert.assertEquals(driver.getTitle(),"‎KYNA on the App Store");
-		
-		switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");		
-		Thread.sleep(2000);
-		
-		clickElementByJavascript("//a/img[@alt='android-app-icon']");
-		Thread.sleep(2000);
-		switchToWindowByTitle("KYNA - Học online cùng chuyên gia - Apps on Google Play");
-		Assert.assertEquals(driver.getTitle(),"KYNA - Học online cùng chuyên gia - Apps on Google Play");
-		
-		switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");		
-		Thread.sleep(2000);
-		
-		driver.switchTo().frame(driver.findElement(By.xpath("//iframe[contains(@src,\"facebook.com\")]")));
-		driver.findElement(By.xpath("//a[text()='Kyna.vn']")).click();
-		Thread.sleep(2000);
-		switchToWindowByTitle("Kyna.vn - Trang chủ | Facebook");
-		Assert.assertEquals(driver.getTitle(),"Kyna.vn - Trang chủ | Facebook");
-		
-		driver.switchTo().defaultContent();
-		switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");		
-		Thread.sleep(2000);
-		
-		driver.findElement(By.xpath("//p[text()='Trường học trực tuyến cho trẻ']//preceding-sibling::a")).click();;
-		Thread.sleep(2000);
-		switchToWindowByTitle("Kynaforkids.vn trường học trực tuyến cho trẻ");
-		Assert.assertEquals(driver.getTitle(),"Kynaforkids.vn trường học trực tuyến cho trẻ");
-		
-		switchToWindowByTitle("Kyna.vn - Học online cùng chuyên gia");	
-		Thread.sleep(2000);
-		
-		driver.findElement(By.xpath("//p[text()='Đào tạo trực tuyến cho doanh nghiệp']//preceding-sibling::a")).click();
-		Thread.sleep(2000);
-		switchToWindowByTitle("Giải pháp đào tạo nhân sự online toàn diện - KynaBiz.vn");
-		Assert.assertEquals(driver.getTitle(),"Giải pháp đào tạo nhân sự online toàn diện - KynaBiz.vn");
-		
-		closeAllWindowWithoutParent(parentID);
-
+		Assert.assertTrue(find("//p[@class='name']//a[@title='Image_01.jpg']").isDisplayed());
 	}
 	
-
 	@Test
-	public void TC_04_Window_Tab_03() {
-		driver.get("http://live.guru99.com/index.php/");
-		clickElementByJavascript("//a[text()='Mobile']");
-		driver.findElement(By.xpath("//a[text()='Sony Xperia']/parent::h2/following-sibling::div[@class='actions']/ul/li/a[text()='Add to Compare']")).click();
-		Assert.assertTrue(driver.findElement(By.xpath("//span[text()='The product Sony Xperia has been added to comparison list.']")).isDisplayed());
-		
-		driver.findElement(By.xpath("//a[text()='Samsung Galaxy']/parent::h2/following-sibling::div[@class='actions']/ul/li/a[text()='Add to Compare']")).click();
-		Assert.assertTrue(driver.findElement(By.xpath("//span[text()='The product Samsung Galaxy has been added to comparison list.']")).isDisplayed());
-	
-		driver.findElement(By.xpath("//span[text()='Compare']")).click();
-		switchToWindowByTitle("Products Comparison List - Magento Commerce");
-		Assert.assertEquals(driver.getTitle(), "Products Comparison List - Magento Commerce");
-		Assert.assertTrue(driver.findElement(By.xpath("//img[@alt='Sony Xperia']")).isDisplayed());
-		Assert.assertTrue(driver.findElement(By.xpath("//img[@alt='Samsung Galaxy']")).isDisplayed());
-		
-		driver.findElement(By.xpath("//button[@title='Close Window']")).click();
-		switchToWindowByTitle("Mobile");
-		driver.findElement(By.xpath("//a[text()='Clear All']")).click();
-		driver.switchTo().alert().accept();
-		Assert.assertTrue(driver.findElement(By.xpath("//span[text()='The comparison list was cleared.']")).isDisplayed());
-		
-		
-		
+	public void TC_03_UploadFile_byRobotClass() throws InterruptedException {
 		
 	}
 	
-	//Switch to child window (only 2 window)
-	public void switchToWindowByID(String parentID) {
-		Set <String> allWindows=driver.getWindowHandles();
-		for(String runWindow:allWindows)
-		{
-			if(!runWindow.equals(parentID)) {
-				driver.switchTo().window(runWindow);
-				break;
-			}
-		}
-	}
-	
-	//Switch to child Windows (greater than 2 windows and title of the pages are unique)
-	public void switchToWindowByTitle(String title)
-	{
-		Set <String> allWindows= driver.getWindowHandles();
-		for(String runWindows:allWindows)
-		{
-			driver.switchTo().window(runWindows);
-			String currentWin=driver.getTitle();
-			if(currentWin.equals(title))
-			{
-				break;
-			}
-		}
-	}
-	
-	//Close all windows without parent window
-	public void closeAllWindowWithoutParent(String parentWindow) {
-		Set<String>allWindows=driver.getWindowHandles();
-		for(String runWindow:allWindows)
-		{
-				if(!runWindow.equals(parentWindow))
-				{
-					driver.switchTo().window(runWindow);
-					driver.close();
-				}
-		}
-		driver.switchTo().window(parentWindow);
-	}
-
-	public void clickElementByJavascript(String locator) {
-		WebElement element=driver.findElement(By.xpath(locator));
-		javascript=(JavascriptExecutor) driver;
-		javascript.executeScript("arguments[0].click();", element);	
+	@Test
+	public void TC_04_UploadFile() throws InterruptedException {
 		
 	}
 
+	public WebElement find(String xpath) {
+		return driver.findElement(By.xpath(xpath));
+	}
+	public List <WebElement> finds(String xpath) {
+		return driver.findElements(By.xpath(xpath));
+	}
 	// Post condition
 	@AfterClass
 	public void afterClass() {
