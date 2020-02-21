@@ -1,5 +1,10 @@
 package webdriver_api;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +19,8 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+
 
 
 public class Topic_11_12_Popup_Iframe_Window_2 {
@@ -68,12 +75,12 @@ public class Topic_11_12_Popup_Iframe_Window_2 {
 		
 	}
 	
-	@Test
 	public void TC_02_UploadFile_byAutoIT() throws InterruptedException, IOException{
 		driver.get("http://blueimp.github.com/jQuery-File-Upload/");
 		
 		WebElement uploadFile=driver.findElement(By.cssSelector(".fileinput-button"));
 		uploadFile.click();
+		Thread.sleep(2000);
 		
 		//Execute time file(.exe/ .msi/ .jar/ .bat/ .sh)
 		Runtime.getRuntime().exec(new String[] {firefoxAutoIT,image01Path} );
@@ -83,7 +90,39 @@ public class Topic_11_12_Popup_Iframe_Window_2 {
 	}
 	
 	@Test
-	public void TC_03_UploadFile_byRobotClass() throws InterruptedException {
+	public void TC_03_UploadFile_byRobotClass() throws InterruptedException, AWTException {
+		
+		driver.get("http://blueimp.github.com/jQuery-File-Upload/");
+		
+		WebElement uploadFile=driver.findElement(By.cssSelector(".fileinput-button"));
+		uploadFile.click();
+		Thread.sleep(2000);
+		
+		StringSelection select=new StringSelection(image01Path);
+		
+		//Copy to clipboard
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(select, null);
+		
+		Robot robot=new Robot();
+		Thread.sleep(1000);
+		
+		//Nhan phim enter
+		robot.keyPress(KeyEvent.VK_ENTER);
+		robot.keyRelease(KeyEvent.VK_ENTER);
+		
+		//Nhan phim Ctrl-V
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_V);
+		
+		//Nha phim Ctr-V
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+		robot.keyRelease(KeyEvent.VK_V);
+		
+		//Nhan enter
+		robot.keyPress(KeyEvent.VK_ENTER);
+		robot.keyRelease(KeyEvent.VK_ENTER);
+		
+		Thread.sleep(2000);
 		
 	}
 	
