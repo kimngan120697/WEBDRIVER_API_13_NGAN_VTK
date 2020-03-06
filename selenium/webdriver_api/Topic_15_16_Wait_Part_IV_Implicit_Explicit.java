@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -151,8 +152,15 @@ public class Topic_15_16_Wait_Part_IV_Implicit_Explicit {
 		//Chờ cho loading icon biến mất
 		waitExplicit.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[contains(@style,'position: absolute;')]/div[@class='raDiv']")));
 		
+		try
+		{
 		//Check current day = selected
 		Assert.assertTrue(driver.findElement(By.xpath("//td[@class='rcSelected']//a[text()='22']")).isDisplayed());
+		}
+		catch(NoSuchElementException ex)
+		{
+			System.out.println("Switch to catch exception");
+		}
 		
 		dateSelectedText=driver.findElement(By.id("ctl00_ContentPlaceholder1_Label1"));
 		System.out.println("Date selected= "+ dateSelectedText.getText());
